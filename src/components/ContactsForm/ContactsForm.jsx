@@ -1,19 +1,25 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addName, addNumber, resetName, resetNumber } from 'redux/slice';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { nanoid } from 'nanoid';
+import { useSelector } from 'react-redux';
+import { addContacts } from 'redux/slice';
+import { selectContacts } from 'redux/selectors';
 
-function ContactsForm({ onSubmit }) {
-  const nameSelector = useSelector(store => store.name);
-  const numberSelector = useSelector(store => store.number);
+function ContactsForm() {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const contacts = useSelector(selectContacts);
+
   const dispatch = useDispatch();
 
   const handleChange = e => {
     switch (e.currentTarget.name) {
       case 'name':
-        dispatch(addName(e.currentTarget.value));
+        setName(e.currentTarget.value);
         break;
       case 'number':
-        dispatch(addNumber(e.currentTarget.value));
+        setNumber(e.currentTarget.value);
         break;
       default:
         break;
@@ -21,13 +27,32 @@ function ContactsForm({ onSubmit }) {
   };
 
   const resetForm = () => {
-    dispatch(resetName());
-    dispatch(resetNumber());
+    setName('');
+    setNumber('');
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit(nameSelector, numberSelector);
+
+    const checkAlert = contacts.some(
+      f => f.name.toLocaleLowerCase() === name.toLocaleLowerCase()
+    );
+
+    if (checkAlert) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
+    const newContact = {
+      id: nanoid(9),
+      name: name,
+      number: number,
+    };
+
+    dispatch(addContacts(newContact));
+
+    console.log(newContact);
+
     resetForm();
   };
 
@@ -38,7 +63,7 @@ function ContactsForm({ onSubmit }) {
         type="text"
         name="name"
         placeholder="Full name"
-        value={nameSelector}
+        value={name}
         onChange={handleChange}
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
@@ -49,7 +74,7 @@ function ContactsForm({ onSubmit }) {
         type="tel"
         name="number"
         placeholder="Tel. number"
-        value={numberSelector}
+        value={number}
         onChange={handleChange}
         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"

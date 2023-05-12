@@ -10,7 +10,7 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { conSlice, filterSlice, nameSlice, numberSlice } from './slice';
+import { conSlice, filterSlice } from './slice';
 
 const persistConfig = {
   key: 'contacts',
@@ -24,8 +24,6 @@ export const store = configureStore({
   reducer: {
     contacts: contactsReducer,
     filter: filterSlice.reducer,
-    name: nameSlice.reducer,
-    number: numberSlice.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

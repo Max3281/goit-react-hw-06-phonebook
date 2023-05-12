@@ -23,34 +23,5 @@ export const filterSlice = createSlice({
   },
 });
 
-export const nameSlice = createSlice({
-  name: 'name',
-  initialState: '',
-  reducers: {
-    addName: (state, action) => {
-      return (state = action.payload);
-    },
-    resetName: (state, action) => {
-      return (state = '');
-    },
-  },
-});
-
-export const numberSlice = createSlice({
-  name: 'number',
-  initialState: '',
-  reducers: {
-    addNumber: (state, action) => {
-      return (state = action.payload);
-    },
-
-    resetNumber: (state, action) => {
-      return (state = '');
-    },
-  },
-});
-
-export const { addName, resetName } = nameSlice.actions;
-export const { addNumber, resetNumber } = numberSlice.actions;
 export const { onFilter } = filterSlice.actions;
 export const { addContacts, deleteContacts } = conSlice.actions;
